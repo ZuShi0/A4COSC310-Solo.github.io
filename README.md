@@ -9,7 +9,7 @@ Using the power of our chat engine you can simulate talking to a Astronaut!
 
 ## Live Demo
 
-[Live Demo](https://cosc-310-team-11.github.io/)
+[Live Demo](https://cosc-310-team-11.github.io/A3COSC310-Team11.github.io/)
 ## Authors
 
 - [@John Elder](https://github.com/justchecking)
