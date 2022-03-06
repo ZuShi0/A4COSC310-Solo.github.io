@@ -31,3 +31,7 @@ Using the power of our chat engine you can simulate talking to a Astronaut!
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
+## Run
+I'll be sure to make this documentation better later
+Note that you need npm/node installed
+run `npm start` on cli and navigate to `http://localhost:4000/`
