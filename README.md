@@ -31,7 +31,21 @@ Using the power of our chat engine you can simulate talking to a Astronaut!
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
+## Setup
+You must have `npm` and `nodejs` installed on your system. https://nodejs.org/en/download/
+
+clone the project
+```
+git clone https://github.com/COSC-310-team-11/A3COSC310-Team11.github.io
+````
+
+install all the npm dependencies
+```
+npm install
+```
+
 ## Run
-I'll be sure to make this documentation better later
-Note that you need npm/node installed
-run `npm start` on cli and navigate to `http://localhost:4000/`
+```
+npm start
+```
+The site can be viewed at `http://localhost:4000/`
