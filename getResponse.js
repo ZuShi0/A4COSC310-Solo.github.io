@@ -284,7 +284,7 @@ function getResponse(input){
 
     var bestmatching = bestMatch(userInput);
 
-    var respo = getResponseFromVocabulary(bestmatching);
+    var respo = getResponseFromVocabulary(bestmatching)+" old";
 
     return respo;
 }
