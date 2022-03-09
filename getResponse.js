@@ -286,7 +286,8 @@ function getResponse(input){
 
     var respo = getResponseFromVocabulary(bestmatching)+" new";
 
-    return respo;
+    //return respo;
+    return userInput;
 }
 
 module.exports = getResponse;
