@@ -42,7 +42,8 @@ function bestMatch(str1) {
         var splitString = vocabulary[i][0].split(' ');
         var wordsMatched = 0;
         for (var j = 0; j < splitString.length; j++) {
-            if (str1.includes(splitString[j]))
+            // compare stemmed versions of vocab and input
+            if (str1.includes(stemmer(splitString[j])))
                 wordsMatched++;
         }
         if (wordsMatched > bestMatchnum) {
@@ -66,6 +67,7 @@ const getResponseFromVocabulary = (index) => {
 
 };
 
+// Porter Stemming Algorithm
 var stemmer = (function(){
 	var step2list = {
 			"ational" : "ate",
@@ -242,6 +244,19 @@ var stemmer = (function(){
 	}
 })();
 
+// Applies stemming algorithm to each word in user input string
+function stemInput(input) {
+    var stemOut = "";
+    var spltIn = input.split(" ");
+
+    for (var i = 0; i < spltIn.length; i++){
+        stemOut += stemmer(spltIn[i]);
+    }
+
+    // return new stemmed output with no spaces
+    return stemOut;
+}
+
 // Levenshtein Distance (Takes differences between 2 strings and returns the number of differences) 
 // Known algrothim
 const levenshteinDistance = (str1 = '', str2 = '') => {
@@ -275,19 +290,22 @@ function getIdea() {
 function getResponse(input){
 
     //this strips the punctuation and the spaces from user input
-    // var punctRE = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
+    var punctRE = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
 
-    // //convert to lower case | remove punctuation | remove spaces
-    // var userInput = input.replace(punctRE, '').replace(/\s+/g, ' ').toLowerCase();
+    //convert to lower case | remove punctuation | remove spaces
+    //var userInput = input.replace(punctRE, '').replace(/\s+/g, ' ').toLowerCase();
+    //leaving above old code in case we want to test the old code
 
-    var userInput = stemmer(input);
+    var userInput = input.replace(punctRE, '').toLowerCase();
+
+    // get stemmed version of user input without spaces
+    userInput = stemInput(input);
 
     var bestmatching = bestMatch(userInput);
 
-    var respo = getResponseFromVocabulary(bestmatching)+" new";
+    var respo = getResponseFromVocabulary(bestmatching);
 
-    //return respo;
-    return userInput;
+    return respo;
 }
 
 module.exports = getResponse;
