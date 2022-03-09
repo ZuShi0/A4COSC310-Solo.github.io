@@ -274,17 +274,17 @@ function getIdea() {
 //all the input-parsing code goes into this function
 function getResponse(input){
 
-    // //this strips the punctuation and the spaces from user input
-    // var punctRE = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
+    //this strips the punctuation and the spaces from user input
+    var punctRE = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
 
-    // //convert to lower case | remove punctuation | remove spaces
-    // var userInput = input.replace(punctRE, '').replace(/\s+/g, ' ').toLowerCase();
+    //convert to lower case | remove punctuation | remove spaces
+    var userInput = input.replace(punctRE, '').replace(/\s+/g, ' ').toLowerCase();
 
-    var userInput = stemmer(input);
+    //var userInput = stemmer(input);
 
     var bestmatching = bestMatch(userInput);
 
-    var respo = getResponseFromVocabulary(bestmatching)+" new";
+    var respo = getResponseFromVocabulary(bestmatching)+" old";
 
     return respo;
 }
