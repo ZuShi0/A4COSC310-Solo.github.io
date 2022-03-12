@@ -1,3 +1,4 @@
+let Natural = require('natural');
 //this is what the bot knows
 var vocabulary = [
     ['hi', ['hello', 'greetings', 'hey there']],
@@ -257,6 +258,21 @@ function stemInput(input) {
     return stemOut;
 }
 
+function posTagger(input){
+	var baseFolder = path.join(path.dirname(require.resolve("natural")), "brill_pos_tagger");
+	var rulesFilename = baseFolder + "/data/English/tr_from_posjs.txt";
+	var lexiconFilename = baseFolder + "/data/English/lexicon_from_posjs.json";
+	var defaultCategory = 'N';
+	var lexicon = new Natural.Lexicon(lexiconFilename, defaultCategory);
+	var rules = new Natural.RuleSet(rulesFilename);
+
+	var tagger = new Natural.BrillPOSTagger(lexicon, rules);
+
+	var tokenizer = new Natural.WordTokenizer();
+
+	var tokens = tokenizer.tokenize(input);
+	return tagger.tag(tokens);
+}
 // Levenshtein Distance (Takes differences between 2 strings and returns the number of differences) 
 // Known algrothim
 const levenshteinDistance = (str1 = '', str2 = '') => {
