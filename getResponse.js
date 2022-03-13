@@ -39,16 +39,32 @@ var vocabulary = [
 function bestMatch(str1) {
     var bestMatch = 0;
     var bestMatchnum = 0;
+	var inputTags = posTagger(str1);
+
+	var tokenizer = new Natural.WordTokenizer();
+	var porterStemmer = Natural.PorterStemmer;
     for (var i = 0; i < vocabulary.length; i++) {
-        var splitString = vocabulary[i][0].split(' ');
+		var splitString = tokenizer.tokenize(vocabulary[i][0]);
+		var posTag = posTagger(vocabulary[i][0]);
         var wordsMatched = 0;
+		var posMatched = 0;
         for (var j = 0; j < splitString.length; j++) {
             // compare stemmed versions of vocab and input
-            if (str1.includes(stemmer(splitString[j])))
-                wordsMatched++;
+            // if (str1.includes(porterStemmer.stem(splitString[j])))
+            //     wordsMatched++;
+			
+			for (var k = 0; k < inputTags.length; k++){
+				if (porterStemmer.stem(inputTags[k].token) === porterStemmer.stem(posTag[j].token)){
+					wordsMatched++;
+					if(inputTags[k].tag === posTag[j].tag){
+						posMatched++;
+					}
+				}
+			}
+			
         }
-        if (wordsMatched > bestMatchnum) {
-            bestMatchnum = wordsMatched;
+        if ((wordsMatched+posMatched) > bestMatchnum) {
+            bestMatchnum = (wordsMatched+posMatched);
             bestMatch = i;
         }
     }
@@ -257,21 +273,19 @@ function stemInput(input) {
     // return new stemmed output with no spaces
     return stemOut;
 }
-
+var temp = posTagger("Hello, There!");
+// Tokenizes a string and creates 
 function posTagger(input){
-	var baseFolder = path.join(path.dirname(require.resolve("natural")), "brill_pos_tagger");
-	var rulesFilename = baseFolder + "/data/English/tr_from_posjs.txt";
-	var lexiconFilename = baseFolder + "/data/English/lexicon_from_posjs.json";
-	var defaultCategory = 'N';
-	var lexicon = new Natural.Lexicon(lexiconFilename, defaultCategory);
-	var rules = new Natural.RuleSet(rulesFilename);
+	var language = 'EN';
+	var lexicon = new Natural.Lexicon(language, 'n', 'N');
+	var rules = new Natural.RuleSet(language);
 
 	var tagger = new Natural.BrillPOSTagger(lexicon, rules);
 
 	var tokenizer = new Natural.WordTokenizer();
 
 	var tokens = tokenizer.tokenize(input);
-	return tagger.tag(tokens);
+	return tagger.tag(tokens).taggedWords;
 }
 // Levenshtein Distance (Takes differences between 2 strings and returns the number of differences) 
 // Known algrothim
@@ -306,22 +320,22 @@ function getIdea() {
 function getResponse(input){
 
     //this strips the punctuation and the spaces from user input
-    var punctRE = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
+    // var punctRE = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
 
     //convert to lower case | remove punctuation | remove spaces
     //var userInput = input.replace(punctRE, '').replace(/\s+/g, ' ').toLowerCase();
     //leaving above old code in case we want to test the old code
 
-    var userInput = input.replace(punctRE, '').toLowerCase();
+    // var userInput = input.replace(punctRE, '').toLowerCase();
 
     // get stemmed version of user input without spaces
-    userInput = stemInput(input);
+    // userInput = stemInput(input);
 
-    var bestmatching = bestMatch(userInput);
+    var bestmatching = bestMatch(input.toLowerCase());
 
-    var respo = getResponseFromVocabulary(bestmatching);
+    // var respo = getResponseFromVocabulary(bestmatching);
 
-    return respo;
+    return getResponseFromVocabulary(bestmatching);
 }
 
 module.exports = getResponse;
