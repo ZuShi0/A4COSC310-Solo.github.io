@@ -4,7 +4,8 @@
   "description": "Using the power of our chat engine you can simulate talking to a Astronaut!",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "test": "jasmine"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
     "natural": "^5.1.13"
   },
   "devDependencies": {
+    "jasmine": "^4.0.2",
     "nodemon": "^2.0.15"
   }
 }

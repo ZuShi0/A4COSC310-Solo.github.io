@@ -44,20 +44,21 @@ function bestMatch(str1) {
 	var tokenizer = new Natural.WordTokenizer();
 	var porterStemmer = Natural.PorterStemmer;
     for (var i = 0; i < vocabulary.length; i++) {
-		var splitString = tokenizer.tokenize(vocabulary[i][0]);
+		// var splitString = tokenizer.tokenize(vocabulary[i][0]);
 		var posTag = posTagger(vocabulary[i][0]);
         var wordsMatched = 0;
 		var posMatched = 0;
-        for (var j = 0; j < splitString.length; j++) {
+        for (var j = 0; j < posTag.length; j++) {
             // compare stemmed versions of vocab and input
             // if (str1.includes(porterStemmer.stem(splitString[j])))
             //     wordsMatched++;
 			
 			for (var k = 0; k < inputTags.length; k++){
-				if (porterStemmer.stem(inputTags[k].token) === porterStemmer.stem(posTag[j].token)){
-					wordsMatched++;
+				if (inputTags[k].token === posTag[j].token){
+					// wordsMatched++;
 					if(inputTags[k].tag === posTag[j].tag){
-						posMatched++;
+						if (posTag[j].tag.includes('NN')||posTag[j].tag.includes('JJ'))
+							posMatched++;
 					}
 				}
 			}
@@ -283,8 +284,13 @@ function posTagger(input){
 	var tagger = new Natural.BrillPOSTagger(lexicon, rules);
 
 	var tokenizer = new Natural.WordTokenizer();
+	var porterStemmer = Natural.PorterStemmer;
 
 	var tokens = tokenizer.tokenize(input);
+	
+	for (var i = 0; i < tokens.length; i++){
+		tokens[i] = porterStemmer.stem(tokens[i]);
+	}
 	return tagger.tag(tokens).taggedWords;
 }
 // Levenshtein Distance (Takes differences between 2 strings and returns the number of differences) 
