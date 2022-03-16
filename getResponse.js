@@ -38,6 +38,18 @@ var vocabulary = [
     ['see you later', ['Another time then', 'thank you for the chat', 'hope to see you again']]
 ];
 
+//for sentimental responses
+const positive_vocabulary = [
+	'thank you!',
+	'thank you very much!',
+	'i appreciate it!'
+];
+const negative_vocabulary = [
+	`don't be rude!`,
+	`stop that!`,
+	`don't say that!`
+];
+
 function bestMatch(str1) {
     var bestMatch = 0;
     var bestMatchnum = 0;
@@ -303,12 +315,12 @@ function getResponse(input){
 
 	//calculate the sentiment
 	var sentiment = sentiment_instance.analyze(userInput).comparative;
+	//if sentiment is overwhelmingly positive or negative, return a different response
 	if(sentiment > 0.2){
-		sentiment = 'positive';
-	}else if(sentiment < -0.02){
-		sentiment = 'negative';
-	}else{
-		sentiment = 'neutral';
+		return positive_vocabulary[Math.floor(Math.random() * positive_vocabulary.length)];
+	}
+	if(sentiment < -0.2){
+		return negative_vocabulary[Math.floor(Math.random() * negative_vocabulary.length)];
 	}
 
     // get stemmed version of user input without spaces
@@ -318,7 +330,7 @@ function getResponse(input){
 
     var respo = getResponseFromVocabulary(bestmatching);
 
-    return `sentiment: '${sentiment}'; response: ` + respo;
+    return respo;
 }
 
 module.exports = getResponse;
