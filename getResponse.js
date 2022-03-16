@@ -1,3 +1,6 @@
+const nlp_sentiment = require('sentiment');
+const sentiment_instance = new nlp_sentiment(); //for sentiment analysis
+
 //this is what the bot knows
 var vocabulary = [
     ['hi', ['hello', 'greetings', 'hey there']],
@@ -298,6 +301,16 @@ function getResponse(input){
 
     var userInput = input.replace(punctRE, '').toLowerCase();
 
+	//calculate the sentiment
+	var sentiment = sentiment_instance.analyze(userInput).comparative;
+	if(sentiment > 0.2){
+		sentiment = 'positive';
+	}else if(sentiment < -0.02){
+		sentiment = 'negative';
+	}else{
+		sentiment = 'neutral';
+	}
+
     // get stemmed version of user input without spaces
     userInput = stemInput(input);
 
@@ -305,7 +318,7 @@ function getResponse(input){
 
     var respo = getResponseFromVocabulary(bestmatching);
 
-    return respo;
+    return `sentiment: '${sentiment}'; response: ` + respo;
 }
 
 module.exports = getResponse;

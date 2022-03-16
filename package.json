@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/COSC-310-team-11/A3COSC310-Team11.github.io#readme",
   "dependencies": {
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "sentiment": "^5.0.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
