@@ -55,10 +55,10 @@ function bestMatch(str1) {
 			
 			for (var k = 0; k < inputTags.length; k++){
 				if (inputTags[k].token === posTag[j].token){
-					// wordsMatched++;
+					wordsMatched++;
 					if(inputTags[k].tag === posTag[j].tag){
 						if (posTag[j].tag.includes('NN')||posTag[j].tag.includes('JJ'))
-							posMatched++;
+							posMatched+=2;
 					}
 				}
 			}
