@@ -365,13 +365,13 @@ function getIdea() {
 function getResponse(input){
 
     //this strips the punctuation and the spaces from user input
-    // var punctRE = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
+    var punctRE = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
 
     //convert to lower case | remove punctuation | remove spaces
-    //var userInput = input.replace(punctRE, '').replace(/\s+/g, ' ').toLowerCase();
+    var userInput = input.replace(punctRE, '').replace(/\s+/g, ' ').toLowerCase();
     //leaving above old code in case we want to test the old code
 
-    // var userInput = input.replace(punctRE, '').toLowerCase();
+    var userInput = input.replace(punctRE, '').toLowerCase();
 
 	//calculate the sentiment
 	var sentiment = sentiment_instance.analyze(userInput).comparative;
