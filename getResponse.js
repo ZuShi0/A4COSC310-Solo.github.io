@@ -1,4 +1,7 @@
 let Natural = require('natural');
+const nlp_sentiment = require('sentiment');
+const sentiment_instance = new nlp_sentiment(); //for sentiment analysis
+
 //this is what the bot knows
 var vocabulary = [
 	['hi', ['hello', 'greetings', 'hey there']],
@@ -58,6 +61,18 @@ var vocabulary = [
 // Other general responese
 	['games', ['sorry, in space we dont play games in space!', 'lets talk space instead!', 'lets talk stars instead!']],
 	['magic', ['there is no magic in space but space is magic itself!', 'lets talk about our magical space instead!', 'lets talk about the magical stars instead!']]
+];
+
+//for sentimental responses
+const positive_vocabulary = [
+	'thank you!',
+	'thank you very much!',
+	'i appreciate it!'
+];
+const negative_vocabulary = [
+	`don't be rude!`,
+	`stop that!`,
+	`don't say that!`
 ];
 
 function bestMatch(str1) {
@@ -357,6 +372,16 @@ function getResponse(input){
     //leaving above old code in case we want to test the old code
 
     // var userInput = input.replace(punctRE, '').toLowerCase();
+
+	//calculate the sentiment
+	var sentiment = sentiment_instance.analyze(userInput).comparative;
+	//if sentiment is overwhelmingly positive or negative, return a different response
+	if(sentiment > 0.2){
+		return positive_vocabulary[Math.floor(Math.random() * positive_vocabulary.length)];
+	}
+	if(sentiment < -0.2){
+		return negative_vocabulary[Math.floor(Math.random() * negative_vocabulary.length)];
+	}
 
     // get stemmed version of user input without spaces
     // userInput = stemInput(input);
