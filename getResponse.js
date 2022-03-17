@@ -1,3 +1,4 @@
+let Natural = require('natural');
 //this is what the bot knows
 var vocabulary = [
 	['hi', ['hello', 'greetings', 'hey there']],
@@ -62,16 +63,33 @@ var vocabulary = [
 function bestMatch(str1) {
     var bestMatch = 0;
     var bestMatchnum = 0;
+	var inputTags = posTagger(str1);
+
+	var tokenizer = new Natural.WordTokenizer();
+	var porterStemmer = Natural.PorterStemmer;
     for (var i = 0; i < vocabulary.length; i++) {
-        var splitString = vocabulary[i][0].split(' ');
+		// var splitString = tokenizer.tokenize(vocabulary[i][0]);
+		var posTag = posTagger(vocabulary[i][0]);
         var wordsMatched = 0;
-        for (var j = 0; j < splitString.length; j++) {
+		var posMatched = 0;
+        for (var j = 0; j < posTag.length; j++) {
             // compare stemmed versions of vocab and input
-            if (str1.includes(stemmer(splitString[j])))
-                wordsMatched++;
+            // if (str1.includes(porterStemmer.stem(splitString[j])))
+            //     wordsMatched++;
+			
+			for (var k = 0; k < inputTags.length; k++){
+				if (inputTags[k].token === posTag[j].token){
+					wordsMatched++;
+					if(inputTags[k].tag === posTag[j].tag){
+						if (posTag[j].tag.includes('NN')||posTag[j].tag.includes('JJ'))
+							posMatched+=2;
+					}
+				}
+			}
+			
         }
-        if (wordsMatched > bestMatchnum) {
-            bestMatchnum = wordsMatched;
+        if ((wordsMatched+posMatched) > bestMatchnum) {
+            bestMatchnum = (wordsMatched+posMatched);
             bestMatch = i;
         }
     }
@@ -280,7 +298,25 @@ function stemInput(input) {
     // return new stemmed output with no spaces
     return stemOut;
 }
+var temp = posTagger("Hello, There!");
+// Tokenizes a string and creates 
+function posTagger(input){
+	var language = 'EN';
+	var lexicon = new Natural.Lexicon(language, 'n', 'N');
+	var rules = new Natural.RuleSet(language);
 
+	var tagger = new Natural.BrillPOSTagger(lexicon, rules);
+
+	var tokenizer = new Natural.WordTokenizer();
+	var porterStemmer = Natural.PorterStemmer;
+
+	var tokens = tokenizer.tokenize(input);
+	
+	for (var i = 0; i < tokens.length; i++){
+		tokens[i] = porterStemmer.stem(tokens[i]);
+	}
+	return tagger.tag(tokens).taggedWords;
+}
 // Levenshtein Distance (Takes differences between 2 strings and returns the number of differences) 
 // Known algrothim
 const levenshteinDistance = (str1 = '', str2 = '') => {
@@ -314,22 +350,22 @@ function getIdea() {
 function getResponse(input){
 
     //this strips the punctuation and the spaces from user input
-    var punctRE = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
+    // var punctRE = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
 
     //convert to lower case | remove punctuation | remove spaces
     //var userInput = input.replace(punctRE, '').replace(/\s+/g, ' ').toLowerCase();
     //leaving above old code in case we want to test the old code
 
-    var userInput = input.replace(punctRE, '').toLowerCase();
+    // var userInput = input.replace(punctRE, '').toLowerCase();
 
     // get stemmed version of user input without spaces
-    userInput = stemInput(input);
+    // userInput = stemInput(input);
 
-    var bestmatching = bestMatch(userInput);
+    var bestmatching = bestMatch(input.toLowerCase());
 
-    var respo = getResponseFromVocabulary(bestmatching);
+    // var respo = getResponseFromVocabulary(bestmatching);
 
-    return respo;
+    return getResponseFromVocabulary(bestmatching);
 }
 
 module.exports = getResponse;
