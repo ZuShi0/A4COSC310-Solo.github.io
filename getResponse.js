@@ -400,3 +400,4 @@ function getResponse(input){
 module.exports = getResponse;
 module.exports.getIdea = getIdea;
 module.exports.analyzeSentiment = analyzeSentiment;
+module.exports.stemInput = stemInput;

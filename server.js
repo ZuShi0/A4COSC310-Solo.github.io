@@ -28,6 +28,14 @@ server.post('/api/sentiment', (req, res) => {
     res.json({sentiment: sentiment});
 });
 
+server.post('/api/stem', (req, res) => {
+    const input = req.body.input;
+    console.log('input: ', input);
+    const stemmed = getResponse.stemInput(input);
+    console.log('stemmed: ', stemmed);
+    res.json({stemmed: stemmed});
+})
+
 server.listen(4000, () => {
     console.log('server running...');
 });
