@@ -385,7 +385,7 @@ function getResponse(input){
     // var respo = getResponseFromVocabulary(bestmatching);
 }
 // word2vec function
-function wordvec(input) {
+ function wordvec(input) {
 	// split the input into words
 	var spltIn = input.split(" ");
 	// filter out the common words
@@ -393,7 +393,7 @@ function wordvec(input) {
 		return !commonwords.includes(word);
 	});
 	// for each filtered word in the array
-	var bestmatching = -1;
+	var bestmatching =-1 ;
 	var bestmatchingscore = 0;
 	for (var i = 0; i < filtered.length; i++) {
 		for (var j = 0; j < vocabulary.length; j++) {
@@ -404,7 +404,10 @@ function wordvec(input) {
 			}
 		}
 	}
-	return getResponseFromVocabulary(bestmatching);
+	if(bestmatching===-1)
+		return "I'm sorry, I don't understand. Try using the Give Idea button to get a new idea.";
+	else
+		return getResponseFromVocabulary(bestmatching);
 }
 
 
@@ -476,6 +479,8 @@ var Word2VecUtils = (function () {
 })();
 module.exports = getResponse;
 module.exports.getIdea = getIdea;
+module.exports.wordvec = wordvec;
+module.exports.getResponse = getResponse;
 module.exports.analyzeSentiment = analyzeSentiment;
 module.exports.stemInput = stemInput;
 module.exports.posTagger = posTagger;
