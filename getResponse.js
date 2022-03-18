@@ -361,6 +361,10 @@ function getIdea() {
     return vocabulary[Math.floor(Math.random() * vocabulary.length)][0];
 }
 
+function analyzeSentiment(input) {
+	return sentiment_instance.analyze(input).comparative;
+}
+
 //all the input-parsing code goes into this function
 function getResponse(input){
 
@@ -374,7 +378,7 @@ function getResponse(input){
     var userInput = input.replace(punctRE, '').toLowerCase();
 
 	//calculate the sentiment
-	var sentiment = sentiment_instance.analyze(userInput).comparative;
+	let sentiment = analyzeSentiment(input);
 	//if sentiment is overwhelmingly positive or negative, return a different response
 	if(sentiment > 0.2){
 		return positive_vocabulary[Math.floor(Math.random() * positive_vocabulary.length)];
@@ -395,3 +399,4 @@ function getResponse(input){
 
 module.exports = getResponse;
 module.exports.getIdea = getIdea;
+module.exports.analyzeSentiment = analyzeSentiment;
