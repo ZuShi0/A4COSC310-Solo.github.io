@@ -34,7 +34,15 @@ server.post('/api/stem', (req, res) => {
     const stemmed = getResponse.stemInput(input);
     console.log('stemmed: ', stemmed);
     res.json({stemmed: stemmed});
-})
+});
+
+server.post('/api/pos', (req, res) => {
+    const input = req.body.input;
+    console.log('input: ', input);
+    const pos = getResponse.posTagger(input);
+    console.log('pos: ', pos);
+    res.json(pos);
+});
 
 server.listen(4000, () => {
     console.log('server running...');
