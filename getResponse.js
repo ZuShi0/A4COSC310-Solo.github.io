@@ -367,10 +367,10 @@ function getResponse(input){
 	//calculate the sentiment
 	let sentiment = analyzeSentiment(input);
 	//if sentiment is overwhelmingly positive or negative, return a different response
-	if(sentiment > 0.2){
+	if(sentiment > 0.4){
 		return positive_vocabulary[Math.floor(Math.random() * positive_vocabulary.length)];
 	}
-	if(sentiment < -0.2){
+	if(sentiment < -0.4){
 		return negative_vocabulary[Math.floor(Math.random() * negative_vocabulary.length)];
 	}
 
