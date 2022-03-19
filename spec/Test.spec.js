@@ -19,7 +19,10 @@ describe("Space test", function() {
         expect(resp.getResponse("what is a hypernova")).toEqual(jasmine.any(String));
         expect(resp.getResponse("what is your favorite color")).toEqual(jasmine.any(String));
 
-
+        expect(resp.posTagger("what is your favourite color")).toEqual(jasmine.any(Array));
+        expect(resp.posTagger("4400440404040040324")).toEqual(jasmine.any(Array));
+        expect(resp.posTagger("null")).toEqual(jasmine.any(Array));
+        expect(resp.posTagger("Space!")).toEqual(jasmine.any(Array));
 
         expect(resp.wordvec("4400440404040040324!")).toEqual(jasmine.any(String));
         expect(resp.wordvec("what is a hypernova")).toEqual(jasmine.any(String));
