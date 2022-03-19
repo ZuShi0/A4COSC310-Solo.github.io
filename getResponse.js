@@ -65,8 +65,8 @@ var vocabulary = [
 	['have you seen a black hole', 'Not in person, and I am not sure of what the outcome would be if that was the case'],
 	['Which is the closest next star', 'Space can be terrifying at times, due to the isolation and unkown aspects'],
 // Other general responese
-	['games', ['sorry, in space we dont play games in space!', 'lets talk space instead!', 'lets talk stars instead!']],
-	['magic', ['there is no magic in space but space is magic itself!', 'lets talk about our magical space instead!', 'lets talk about the magical stars instead!']]
+	['do you play games', ['sorry, in space we dont play games in space!', 'lets talk space instead!', 'lets talk stars instead!']],
+	['do you know magic', ['there is no magic in space but space is magic itself!', 'lets talk about our magical space instead!', 'lets talk about the magical stars instead!']]
 ];
 
 //for sentimental responses
@@ -371,10 +371,10 @@ function getResponse(input){
 	//calculate the sentiment
 	let sentiment = analyzeSentiment(input);
 	//if sentiment is overwhelmingly positive or negative, return a different response
-	if(sentiment > 0.2){
+	if(sentiment > 0.4){
 		return positive_vocabulary[Math.floor(Math.random() * positive_vocabulary.length)];
 	}
-	if(sentiment < -0.2){
+	if(sentiment < -0.4){
 		return negative_vocabulary[Math.floor(Math.random() * negative_vocabulary.length)];
 	}
 
