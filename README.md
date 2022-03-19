@@ -15,8 +15,9 @@ Using the power of our chat engine you can simulate talking to a Astronaut!
 - [@John Elder](https://github.com/justchecking)
 - [@Colin Pereira](https://github.com/ZuShi0)
 - [@Harshal Patel](https://github.com/Harshal609)
-- [@Jake Tyerman](https://github.com/jtyrmn)
+- [@Jake Tyerman](https://github.com/jtyrmn)  
 - [@Jarod Guigon](https://github.com/J10C3G7)
+
 
 
 ## Features

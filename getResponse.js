@@ -323,8 +323,9 @@ function stemInput(input) {
     return stemOut;
 }
 var temp = posTagger("Hello, There!");
-// Tokenizes a string and creates 
+// Part of Speech Tagging Function
 function posTagger(input){
+	//sets the tagger analyze english language
 	var language = 'EN';
 	var lexicon = new Natural.Lexicon(language, 'n', 'N');
 	var rules = new Natural.RuleSet(language);
@@ -333,12 +334,15 @@ function posTagger(input){
 
 	var tokenizer = new Natural.WordTokenizer();
 	var porterStemmer = Natural.PorterStemmer;
-
+	
+	//splits the sentence up into seperate words
 	var tokens = tokenizer.tokenize(input);
 	
+	//stems the words
 	for (var i = 0; i < tokens.length; i++){
 		tokens[i] = porterStemmer.stem(tokens[i]);
 	}
+	//returns an array of objects that contain the word and the associated pos tag
 	return tagger.tag(tokens).taggedWords;
 }
 
