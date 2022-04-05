@@ -115,6 +115,20 @@ var vocabulary = [
 	['do you know magic', ['there is no magic in space but space is magic itself!', 'lets talk about our magical space instead!', 'lets talk about the magical stars instead!']]
 ];
 
+
+// for maps api location selection
+const maps_vocabulary = [
+	'what does Mars look like',
+	'what does Venus look like',
+	'what does something otherworldly look like'
+];
+
+const maps_locations = [
+	'29.574299,35.421037',
+	'14.238889,40.298714',
+	'40.8594,-119.3319'
+];
+
 //for sentimental responses
 const positive_vocabulary = [
 	'thank you!',
@@ -425,6 +439,20 @@ function getResponse(input) {
 		return negative_vocabulary[Math.floor(Math.random() * negative_vocabulary.length)];
 	}
 
+	// determine if maps api is needed
+	var reqLoc = false;
+	var locIdx = null;
+	for (var i = 0; i < maps_vocabulary.length; i++){
+		if (input.includes(maps_vocabulary[i].toLowerCase())){
+			reqLoc = true;
+			locIdx = i;
+			break;
+		}
+	}
+
+	if (reqLoc == true){
+		return "Look to your top right and I can show you:LatLong"+maps_locations[locIdx];
+	}
 	// get stemmed version of user input without spaces
 	// userInput = stemInput(input);
 

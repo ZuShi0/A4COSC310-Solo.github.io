@@ -11,6 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
 //this is the chat log
 const chatLog = [];
 
+// holds street view api key
+const streetKey = 'AIzaSyBkn2CnQi4FHdHAY9IZ9hNVmz4wFgS0Jok';
+
 // language picker button functions
 function toggleDrop() {
     document.getElementById("myDropdown").classList.toggle("show");
@@ -37,6 +40,15 @@ function changeLang(lang) {
         body: JSON.stringify({lang: lang}),
         headers: { 'Content-type': 'application/json; charset=UTF-8' }
     })
+}
+
+// change location of map image being displayed
+function changeMapSrc(loc){
+    var streetImage = document.getElementById("streetDef");
+    streetImage.src = "https://maps.googleapis.com/maps/api/streetview?size=500x300&heading=0&location="+loc+"&key="+streetKey;
+    if (streetImage.style.display == ""){
+        streetImage.style.display = "block";
+    }
 }
 
 //since all the vocabulary is on the server, query the server for an idea
@@ -68,7 +80,12 @@ function whatSaid() {
         .then(res => res.json())
         .then(data => {
             var respo = data.output;
-
+            if (respo.includes(":LatLong")){
+                var respLoc = respo.split(":LatLong");
+                respo = respLoc[0];
+                console.log("Location: ", respLoc[1]);
+                changeMapSrc(respLoc[1]);
+            }
             fetch('http://localhost:4000/api/translate', {
                 method: 'POST',
                 body: JSON.stringify({ input: respo }),

@@ -45,6 +45,21 @@ a {
     color: rgb(141, 131, 131);
 }
 
+.street-container {
+  display: flex;
+  position: relative;
+  float: right;
+}
+
+.street-image {
+  max-width: 575px;
+  max-height: 270px;
+  display: none;
+  border-style: solid;
+  border-color: maroon;
+  border-width: 10px;
+}
+
 .dropbtn {
     background-color: #5BC3EB;
     color: white;
