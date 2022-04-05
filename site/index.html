@@ -15,9 +15,20 @@
 </head>
 
 <body>
+	<div class="dropdown">
+		<button onclick="toggleDrop()" class="dropbtn">Language</button>
+		<div id="myDropdown" class="dropdown-content">
+			<button type="button" id="lang" value="en" onclick="changeLang(this.value)">English</button>
+			<button type="button" id="lang" value="ja" onclick="changeLang(this.value)">Japanese</button>
+			<button type="button" id="lang" value="fr" onclick="changeLang(this.value)">French</button>
+			<button type="button" id="lang" value="es" onclick="changeLang(this.value)">Spanish</button>
+			<button type="button" id="lang" value="ru" onclick="changeLang(this.value)">Russian</button>
+			<button type="button" id="lang" value="zh" onclick="changeLang(this.value)">Chinese</button>
+		</div>
+	  </div>
 	<div class="title" id="title">
 		<h2>Hello, I'm an Astronaut.<br /> Say hi below</h2>
-		<a><i class="fa fa-angle-double-down" style="font-size:48px"></i></a>
+		<a><i class="fa fa-angle-double-down" style="position: relative; font-size:48px"></i></a>
 	</div>
 
 	<div class="flex-container">

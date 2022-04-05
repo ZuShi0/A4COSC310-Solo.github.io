@@ -15,6 +15,28 @@ server.post('/api/', (req, res) => {
     res.json({output: output});
 });
 
+server.post('/api/lang', (req, res) => {
+    const lang = req.body.lang;
+    console.log('changing language to: ', lang);
+    try{
+        getResponse.changeLang(lang)
+        console.log('language changed to: ', lang);
+    }
+    catch(err){
+        console.error(err.message);
+    }
+});
+
+server.post('/api/translate', (req, res) => {
+    const input = req.body.input;
+    console.log('translating: ', input);
+    const output = getResponse.translateText(input)
+    .then(output => {
+        console.log('translated: ', output);
+        res.json({output: output});
+    })
+});
+
 server.get('/api/idea', (req, res) => {
     const idea = getResponse.getIdea();
     res.json({idea: idea});

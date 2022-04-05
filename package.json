@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/ZuShi0/A4COSC310-Solo.github.io#readme",
   "dependencies": {
+    "@google-cloud/storage": "^5.18.3",
+    "@google-cloud/translate": "^6.3.1",
     "express": "^4.17.3",
     "natural": "^5.1.13",
     "sentiment": "^5.0.2"

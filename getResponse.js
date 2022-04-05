@@ -2,6 +2,52 @@ let Natural = require('natural');
 const nlp_sentiment = require('sentiment');
 const sentiment_instance = new nlp_sentiment(); //for sentiment analysis
 const wordvecs = require('./wordVecs.js');
+const { Translate } = require('@google-cloud/translate').v2;
+
+// Instantiates a client. Explicitly use service account credentials by
+// specifying the private key file. All clients in google-cloud-node have this
+// helper, see https://github.com/GoogleCloudPlatform/google-cloud-node/blob/master/docs/authentication.md
+const projectId = 'idyllic-parser-346219';
+const keyFilename = './service_keys/idyllic-parser-346219-25ddc73b7f10.json';
+
+// Creates a client
+const translate = new Translate({ projectId, keyFilename });
+// var text = 'Good Morning!';
+var target = 'en';
+var currLang = 'en';
+var sourceLang = 'en';
+
+function changeLang(lang){
+	if (currLang == lang){
+		throw new Error('current language is already: '+lang);
+	}
+	else{
+		target = lang;
+		currLang = lang;
+	}
+}
+
+async function translateText(text) {
+	// Translates the text into the target language. "text" can be a string for
+	// translating a single piece of text, or an array of strings for translating
+	// multiple texts.
+	let translated =  null;
+	
+	if (target == sourceLang){
+		console.log("translation aborted: target same as source")
+		return text;
+	}
+	let [translations] = await translate.translate(text, target);
+	translations = Array.isArray(translations) ? translations : [translations];
+	console.log('Translations:');
+	translations.forEach((translation, i) => {
+		console.log(`${text[i]} => (${target}) ${translation}`);
+		translated = `${translation}`;
+	});
+
+	return translated;
+}
+
 //this is what the bot knows
 var vocabulary = [
 	['hi', ['hello', 'greetings', 'hey there'], 'hello'],
@@ -31,7 +77,7 @@ var vocabulary = [
 	['when are you coming back', 'Usually, I spend between 1-3 years in space before coming back to Earth. Resource limitations are the main reason why I need to return.'],
 	['how long have you been there', 'Currently I have spent a total of 40 years in space'],
 	['where do you live', 'Each Astronaut on this ship has a room that they can stay in'],
-	['what is your favorite food', 'On Earth, Carbonara, but in space, Beef Stew','food'],
+	['what is your favorite food', 'On Earth, Carbonara, but in space, Beef Stew', 'food'],
 	['what is your hobby', 'I like to pass my time by drawing my surroundings in a notebook'],
 	['how old are you', 'I am 65 years old'],
 	['how far are you', 'From Earth, I am 2.537 Million light years away'],
@@ -39,13 +85,13 @@ var vocabulary = [
 	['goodbye', ['Thank you for spending time with me', 'I appreciated the chat', 'enjoy your day']],
 	['have a nice day', ['Enjoy the rest of yours', 'you too', 'I will, thank you']],
 	['see you later', ['Another time then', 'thank you for the chat', 'hope to see you again']],
-// Star topic question below
+	// Star topic question below
 	['Stars', ['Our sun is a star!', 'Stars are cool! and hot at the same time!', 'Stars are big gas giants!!']],
 	['What is a star', 'A star is an astronomical object comprising a luminous spheroid of plasma held together by its gravity.'],
-	['can you name stars', ['Sirius', 'Canopus', 'Arcturus', 'Alpha Centauri A','Vega', 'Rigel','Procyon', 'Achernar']],
+	['can you name stars', ['Sirius', 'Canopus', 'Arcturus', 'Alpha Centauri A', 'Vega', 'Rigel', 'Procyon', 'Achernar']],
 	['can you tell me about Sirius', ['Sirius is the brightest star we know', 'Sirius is also called Alpha Canis Majoris or the Dog Star']],
 	['can you tell me about Canopus', 'Canopus is the second-brightest star in the stary night'],
-	['can you tell me about Alpha Centauri A',  ['It is the nearest star system to our sun', 'Scientists think that there could possibly be life at Alpha Centauri meaning ALIEANS!']],
+	['can you tell me about Alpha Centauri A', ['It is the nearest star system to our sun', 'Scientists think that there could possibly be life at Alpha Centauri meaning ALIEANS!']],
 	['can you tell me about Arcturus', 'Arcturus is a red giant star but will end up as a white dwarf star at end of its life'],
 	['can you tell me about Vega', 'Vega used to be the north pole star around 12,000 B.C.E and will be the future north star in the year 13,727'],
 	['can you tell me about our sun', ['The sun accounts for 99.86% of the mass of the solar system', 'Over one million Earths could fit inside the Sun', 'The Suns surface is around 10,000 degrees Fahrenheit']],
@@ -55,16 +101,16 @@ var vocabulary = [
 	['which star is the brightest', 'Sirius is the brightest star in our stary night'],
 	['what is a nebula', ['A nebula is a giant cloud of dust and gas in space', 'nebulas are created out of a dying star, such as a supernova']],
 	['how are stars created', ['stars are born in nebulas', 'stars are born when atoms of light elements are put under enough pressure for the nuclei to undergo fusion']],
-	['what happens when a star dies', ['It depends on the size of the star, usually star explodes as a supernova','sometimes when a big star dies it can also be a hypernova']],
+	['what happens when a star dies', ['It depends on the size of the star, usually star explodes as a supernova', 'sometimes when a big star dies it can also be a hypernova']],
 	['what is a hypernova', 'A supernova explosion that is 5 to 50 times normal is a hypernova'],
 	['what is a black hole', 'A place in space where gravity pulls so much that even light can not get out.'],
-	['can you tell me more about black hole', ['Our Milky way as a black hole at its center','Dying stars is how black holes are created']],
+	['can you tell me more about black hole', ['Our Milky way as a black hole at its center', 'Dying stars is how black holes are created']],
 	['what is your favorite star', 'The Pleiades is my favorite'],
 	['tell me more about the pleiades', 'It is a cluster of 7 stars known as The Seven Sisters'],
 	['where is pleiades', 'The Pleiades cluster is about 444 light years away from Earth'],
 	['have you seen a black hole', 'Not in person, and I am not sure of what the outcome would be if that was the case'],
 	['Which is the closest next star', 'Space can be terrifying at times, due to the isolation and unkown aspects'],
-// Other general responese
+	// Other general responese
 	['do you play games', ['sorry, in space we dont play games in space!', 'lets talk space instead!', 'lets talk stars instead!']],
 	['do you know magic', ['there is no magic in space but space is magic itself!', 'lets talk about our magical space instead!', 'lets talk about the magical stars instead!']]
 ];
@@ -82,91 +128,91 @@ const negative_vocabulary = [
 ];
 
 function bestMatch(str1) {
-    var bestMatch = 0;
-    var bestMatchnum = 0;
+	var bestMatch = 0;
+	var bestMatchnum = 0;
 	var inputTags = posTagger(str1);
 
 	var tokenizer = new Natural.WordTokenizer();
 	var porterStemmer = Natural.PorterStemmer;
-    for (var i = 0; i < vocabulary.length; i++) {
+	for (var i = 0; i < vocabulary.length; i++) {
 		// var splitString = tokenizer.tokenize(vocabulary[i][0]);
 		var posTag = posTagger(vocabulary[i][0]);
-        var wordsMatched = 0;
+		var wordsMatched = 0;
 		var posMatched = 0;
-        for (var j = 0; j < posTag.length; j++) {
-            // compare stemmed versions of vocab and input
-            // if (str1.includes(porterStemmer.stem(splitString[j])))
-            //     wordsMatched++;
-			
-			for (var k = 0; k < inputTags.length; k++){
-				if (inputTags[k].token === posTag[j].token){
+		for (var j = 0; j < posTag.length; j++) {
+			// compare stemmed versions of vocab and input
+			// if (str1.includes(porterStemmer.stem(splitString[j])))
+			//     wordsMatched++;
+
+			for (var k = 0; k < inputTags.length; k++) {
+				if (inputTags[k].token === posTag[j].token) {
 					wordsMatched++;
-					if(inputTags[k].tag === posTag[j].tag){
-						if (posTag[j].tag.includes('NN')||posTag[j].tag.includes('JJ'))
-							posMatched+=2;
+					if (inputTags[k].tag === posTag[j].tag) {
+						if (posTag[j].tag.includes('NN') || posTag[j].tag.includes('JJ'))
+							posMatched += 2;
 					}
 				}
 			}
-			
-        }
-        if ((wordsMatched+posMatched) > bestMatchnum) {
-            bestMatchnum = (wordsMatched+posMatched);
-            bestMatch = i;
-        }
-    }
-	if(bestMatchnum < 2 ){
+
+		}
+		if ((wordsMatched + posMatched) > bestMatchnum) {
+			bestMatchnum = (wordsMatched + posMatched);
+			bestMatch = i;
+		}
+	}
+	if (bestMatchnum < 2) {
 		return -1;
 	}
 	return bestMatch;
 }
 
 const getResponseFromVocabulary = (index) => {
-    //if there is just one response, return that
-    //if there are multiple, randomly choose one
+	//if there is just one response, return that
+	//if there are multiple, randomly choose one
 
-    const response = vocabulary[index][1];
-    if (Array.isArray(response)) {
-        return response[Math.floor(Math.random() * response.length)];
-    } else {
-        return response;
-    }
+	const response = vocabulary[index][1];
+	if (Array.isArray(response)) {
+		return response[Math.floor(Math.random() * response.length)];
+	} else {
+		return response;
+	}
 
 };
 
 // Porter Stemming Algorithm
-var stemmer = (function(){
+var stemmer = (function () {
 	var step2list = {
-			"ational" : "ate",
-			"tional" : "tion",
-			"enci" : "ence",
-			"anci" : "ance",
-			"izer" : "ize",
-			"bli" : "ble",
-			"alli" : "al",
-			"entli" : "ent",
-			"eli" : "e",
-			"ousli" : "ous",
-			"ization" : "ize",
-			"ation" : "ate",
-			"ator" : "ate",
-			"alism" : "al",
-			"iveness" : "ive",
-			"fulness" : "ful",
-			"ousness" : "ous",
-			"aliti" : "al",
-			"iviti" : "ive",
-			"biliti" : "ble",
-			"logi" : "log"
-		},
+		"ational": "ate",
+		"tional": "tion",
+		"enci": "ence",
+		"anci": "ance",
+		"izer": "ize",
+		"bli": "ble",
+		"alli": "al",
+		"entli": "ent",
+		"eli": "e",
+		"ousli": "ous",
+		"ization": "ize",
+		"ation": "ate",
+		"ator": "ate",
+		"alism": "al",
+		"iveness": "ive",
+		"fulness": "ful",
+		"ousness": "ous",
+		"aliti": "al",
+		"iviti": "ive",
+		"biliti": "ble",
+		"logi": "log"
+	},
 
 		step3list = {
-			"icate" : "ic",
-			"ative" : "",
-			"alize" : "al",
-			"iciti" : "ic",
-			"ical" : "ic",
-			"ful" : "",
-			"ness" : ""
+			"icate": "ic",
+			"ative": "",
+			"alize": "al",
+			"iciti": "ic",
+			"ical": "ic",
+			"ful": "",
+			"ness": ""
 		},
 
 		c = "[^aeiou]",          // consonant
@@ -180,7 +226,7 @@ var stemmer = (function(){
 		s_v = "^(" + C + ")?" + v;                   // vowel in stem
 
 	return function (w) {
-		var 	stem,
+		var stem,
 			suffix,
 			firstch,
 			re,
@@ -191,7 +237,7 @@ var stemmer = (function(){
 
 		if (w.length < 3) { return w; }
 
-		firstch = w.substr(0,1);
+		firstch = w.substr(0, 1);
 		if (firstch == "y") {
 			w = firstch.toUpperCase() + w.substr(1);
 		}
@@ -200,8 +246,8 @@ var stemmer = (function(){
 		re = /^(.+?)(ss|i)es$/;
 		re2 = /^(.+?)([^s])s$/;
 
-		if (re.test(w)) { w = w.replace(re,"$1$2"); }
-		else if (re2.test(w)) {	w = w.replace(re2,"$1$2"); }
+		if (re.test(w)) { w = w.replace(re, "$1$2"); }
+		else if (re2.test(w)) { w = w.replace(re2, "$1$2"); }
 
 		// Step 1b
 		re = /^(.+?)eed$/;
@@ -211,7 +257,7 @@ var stemmer = (function(){
 			re = new RegExp(mgr0);
 			if (re.test(fp[1])) {
 				re = /.$/;
-				w = w.replace(re,"");
+				w = w.replace(re, "");
 			}
 		} else if (re2.test(w)) {
 			var fp = re2.exec(w);
@@ -222,8 +268,8 @@ var stemmer = (function(){
 				re2 = /(at|bl|iz)$/;
 				re3 = new RegExp("([^aeiouylsz])\\1$");
 				re4 = new RegExp("^" + C + v + "[^aeiouwxy]$");
-				if (re2.test(w)) {	w = w + "e"; }
-				else if (re3.test(w)) { re = /.$/; w = w.replace(re,""); }
+				if (re2.test(w)) { w = w + "e"; }
+				else if (re3.test(w)) { re = /.$/; w = w.replace(re, ""); }
 				else if (re4.test(w)) { w = w + "e"; }
 			}
 		}
@@ -297,7 +343,7 @@ var stemmer = (function(){
 		re2 = new RegExp(mgr1);
 		if (re.test(w) && re2.test(w)) {
 			re = /.$/;
-			w = w.replace(re,"");
+			w = w.replace(re, "");
 		}
 
 		// and turn initial Y back to y
@@ -312,19 +358,19 @@ var stemmer = (function(){
 
 // Applies stemming algorithm to each word in user input string
 function stemInput(input) {
-    var stemOut = "";
-    var spltIn = input.split(" ");
+	var stemOut = "";
+	var spltIn = input.split(" ");
 
-    for (var i = 0; i < spltIn.length; i++){
-        stemOut += stemmer(spltIn[i]);
-    }
+	for (var i = 0; i < spltIn.length; i++) {
+		stemOut += stemmer(spltIn[i]);
+	}
 
-    // return new stemmed output with no spaces
-    return stemOut;
+	// return new stemmed output with no spaces
+	return stemOut;
 }
 var temp = posTagger("Hello, There!");
 // Part of Speech Tagging Function
-function posTagger(input){
+function posTagger(input) {
 	//sets the tagger analyze english language
 	var language = 'EN';
 	var lexicon = new Natural.Lexicon(language, 'n', 'N');
@@ -334,12 +380,12 @@ function posTagger(input){
 
 	var tokenizer = new Natural.WordTokenizer();
 	var porterStemmer = Natural.PorterStemmer;
-	
+
 	//splits the sentence up into seperate words
 	var tokens = tokenizer.tokenize(input);
-	
+
 	//stems the words
-	for (var i = 0; i < tokens.length; i++){
+	for (var i = 0; i < tokens.length; i++) {
 		tokens[i] = porterStemmer.stem(tokens[i]);
 	}
 	//returns an array of objects that contain the word and the associated pos tag
@@ -349,7 +395,7 @@ function posTagger(input){
 
 //return a random possible input. Used in conjunction w/ client's fillIdea()
 function getIdea() {
-    return vocabulary[Math.floor(Math.random() * vocabulary.length)][0];
+	return vocabulary[Math.floor(Math.random() * vocabulary.length)][0];
 }
 
 function analyzeSentiment(input) {
@@ -357,39 +403,40 @@ function analyzeSentiment(input) {
 }
 
 //all the input-parsing code goes into this function
-function getResponse(input){
+function getResponse(input) {
 
-    //this strips the punctuation and the spaces from user input
-   // var punctRE = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
 
-    //convert to lower case | remove punctuation | remove spaces
-   // var userInput = input.replace(punctRE, '').replace(/\s+/g, ' ').toLowerCase();
-    //leaving above old code in case we want to test the old code
+	//this strips the punctuation and the spaces from user input
+	// var punctRE = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
 
-  //  var userInput = input.replace(punctRE, '').toLowerCase();
+	//convert to lower case | remove punctuation | remove spaces
+	// var userInput = input.replace(punctRE, '').replace(/\s+/g, ' ').toLowerCase();
+	//leaving above old code in case we want to test the old code
+
+	//  var userInput = input.replace(punctRE, '').toLowerCase();
 
 	//calculate the sentiment
 	let sentiment = analyzeSentiment(input);
 	//if sentiment is overwhelmingly positive or negative, return a different response
-	if(sentiment > 0.4){
+	if (sentiment > 0.4) {
 		return positive_vocabulary[Math.floor(Math.random() * positive_vocabulary.length)];
 	}
-	if(sentiment < -0.4){
+	if (sentiment < -0.4) {
 		return negative_vocabulary[Math.floor(Math.random() * negative_vocabulary.length)];
 	}
 
-    // get stemmed version of user input without spaces
-    // userInput = stemInput(input);
+	// get stemmed version of user input without spaces
+	// userInput = stemInput(input);
 
-    var bestmatching = bestMatch(input.toLowerCase());
+	var bestmatching = bestMatch(input.toLowerCase());
 	if (bestmatching === -1)
-		return  wordvec(input);
-	 else
+		return wordvec(input);
+	else
 		return getResponseFromVocabulary(bestmatching);
-    // var respo = getResponseFromVocabulary(bestmatching);
+	// var respo = getResponseFromVocabulary(bestmatching);
 }
 // word2vec function
- function wordvec(input) {
+function wordvec(input) {
 	// split the input into words
 	var spltIn = input.split(" ");
 	// filter out the common words
@@ -397,18 +444,18 @@ function getResponse(input){
 		return !commonwords.includes(word);
 	});
 	// for each filtered word in the array
-	var bestmatching =-1 ;
+	var bestmatching = -1;
 	var bestmatchingscore = 0;
 	for (var i = 0; i < filtered.length; i++) {
 		for (var j = 0; j < vocabulary.length; j++) {
 			const simWords = Word2VecUtils.findSimilarWords(filtered[i], vocabulary[j][2]);
-			if(simWords > bestmatchingscore){
+			if (simWords > bestmatchingscore) {
 				bestmatchingscore = simWords;
 				bestmatching = j;
 			}
 		}
 	}
-	if(bestmatching===-1)
+	if (bestmatching === -1)
 		return "I'm sorry, I don't understand. Try using the Give Idea button to get a new idea.";
 	else
 		return getResponseFromVocabulary(bestmatching);
@@ -439,11 +486,11 @@ var Word2VecUtils = (function () {
 		}
 
 		return getNClosestMatches(
-			wordvecs[input],  wantedWord
+			wordvecs[input], wantedWord
 		);
 	}
 
-	function getNClosestMatches(inputword,wantedWord ) {
+	function getNClosestMatches(inputword, wantedWord) {
 		const sims = [];
 		for (const word in wordvecs) {
 			const sim = getCosSim(inputword, wordvecs[word]);
@@ -488,3 +535,5 @@ module.exports.getResponse = getResponse;
 module.exports.analyzeSentiment = analyzeSentiment;
 module.exports.stemInput = stemInput;
 module.exports.posTagger = posTagger;
+module.exports.translateText = translateText;
+module.exports.changeLang = changeLang;
