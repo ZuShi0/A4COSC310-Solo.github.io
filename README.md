@@ -24,6 +24,7 @@ The Google Translate API allows users to receive responses from the chatbot in a
 ### Example of Use:
 
 Changing Language using the Language button
+
 ![Logo](https://imgur.com/yJ1OZhs.jpg)
 
 
