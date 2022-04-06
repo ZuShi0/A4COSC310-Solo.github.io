@@ -7,80 +7,57 @@ Using the power of our chat engine you can simulate talking to a Astronaut!
 
 ![Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Astronaut_(97576)_-_The_Noun_Project.svg/512px-Astronaut_(97576)_-_The_Noun_Project.svg.png)
 
-## Live Demo
-
-[Live Demo](https://cosc-310-team-11.github.io/A3COSC310-Team11.github.io/)
 ## Authors
 
-- [@John Elder](https://github.com/justchecking)
 - [@Colin Pereira](https://github.com/ZuShi0)
-- [@Harshal Patel](https://github.com/Harshal609)
-- [@Jake Tyerman](https://github.com/jtyrmn)  
-- [@Jarod Guigon](https://github.com/J10C3G7)
 
 
 
 
-## New Features:
 
-Sentiment Analysis Integration:
+# New Features
 
-Sentiment Analysis allows the bot to determine if a user’s input has a friendly or condescending attitude. If the user’s input is overwhelmingly positive, the bot will respond with a specific message (“thank you!”, “I appreciate it!”, etc). Likewise, the bot will have a defensive message (‘stop being rude!”, etc).
-Example of Improvement:
-Previously, the bot would have the same responses for input that is extremely friendly or offensive like a robot that couldn’t recognize emotion in human speech. Now that the bot responds more naturally to sentimental input, it feels a lot more realistic and human (despite being a bot).
+## Google Translate API Integration:
 
-![Logo](https://i.imgur.com/rXmkJNj.jpg)
+The Google Translate API allows users to receive responses from the chatbot in a language that they pick. Currently, this iteration only supports English, Japanese, French, Spanish, Russian and Chinese. In addition to this, the system currently only accepts user inputs in English, but with more time, input language detection (which is a feature of the API) could be implemented as well. 
 
+### Example of Use:
 
-
-## Word2Vec Integration
-Description of improvements:
-
-From Google's Word2Vec project. This is used to help if there is very little information given. For example if the user only inputs Beans, This will match to no responses as we don't know the best output. 
-
-Example of improvement:
-
-Before with little information the bot would just reply with hello as there was not enough data to give a response. Now it can understand the meaning of single words and find the response that most closely matches the input, giving a response close to what the user may want.
+Changing Language using the Language button
+![Logo](https://imgur.com/yJ1OZhs.jpg)
 
 
+Bot conversation after changing the language to Japanese
+![Logo](https://imgur.com/6RnBcl8.jpg)
 
-![Logo](https://i.imgur.com/r23F6xn.jpg)
+Notice that in the above screenshot, there is a response in English. This is because the default language is English, and the first message that the user sent to the bot was before swapping languages. 
 
+The translation will only occur after sending an input to the bot, and will not translate existing conversation. This is by design so users could refer to multiple translations if they wanted without having to restart a whole conversation.
 
-## POS Tagging Integration
-POS (Part-of-Speech) Tagging was integrated so that we could have a way to categorize words. POS Tagging can be used to help the system better interpret what a user is saying, and potentially formulate more candid responses based on probability.   
-Example of improvement
-Previously the algorithm just matched words, with POS Tagging it also assigns a score based on matched words being identified as a noun or adjective, as these two types of words seem to most distinguish the different prompts. For instance, without POS tagging typing in "what are your opinions on aliens?" before would match up with "what is your name" and display it's response, now it matches with 'have you seen an alien' and displays it's response, which gives a more on point response.
+## Google Street View Static API Integration:
 
-## Porter Stemmer Algorithm
-The Porter Stemmer Algorithm was integrated into our system with the intent of reducing the chance that a user’s input could be taken the wrong way. The algorithm works to remove any common inflexional endings from words in English. For example, cooking would turn into cook, when stemmed. By running the stemming algorithm on each word in the user’s input string, and on each word in the chatbot’s vocabulary string, we can have a more normalized comparison of both strings, which could give the system a higher chance of selecting the correct response. 
-The initial stemming algorithm was later replaced by a stemming algorithm that was part of the library used for the POS Tagging system. 
-Example of improvement:
-    Due to the way that our selection algorithm works, there isn’t a good way to demonstrate the improvement. The stemming works to reduce any extra endings in tags from the POS system before the selection algorithm compares tags.
+The Google Street View Static API is mainly used to proved users with an image of a specified location from Google Maps' Street View feature. In this implementation, I'm using it to provide users with images of places on Earth that are geologically close to Mars/Venus/Others. 
 
-## Extra Agent Topic
-The extra topic we chose to add to our system revolved around Stars, and facts about specific stars. Our original topic of Space correlates to Stars quite strongly, and we felt that it would be a fun and interesting addition to the chatbot’s repertoire. This improved the quality of the conversation through a wider variety of responses, and varying responses to certain questions. 
-Example of improvement
+Currently, only 3 images can be output by the system, due to the fact that Street View is not accessible in every possible location on Earth, and lack of information on existing spatial body geology.
+In addition to this, I have used specific coordinates (Latitude, Longitude) for each image to ensure that the Street View API returns an image. To add more images, I would have to add more coordinates to the location bank. 
 
+### Example of Use:
+Mars:
+![Logo](https://imgur.com/B4n52mR.jpg)
 
-![Logo](https://i.imgur.com/9TMCr3H.jpg)
+Venus:
+![Logo](https://imgur.com/z65SgMb.jpg)
 
-## 5 Responses Outside 2 Topics
-In addition to the extra topic, and the original topic, the chatbot can also respond in a more general sense to inputs that are outside of the scope of both topics. We’ve added responses that are generic enough that they could be seen as “natural” responses to things outside of its focus. 
-Example of improvement
-![logo](https://i.imgur.com/3SFdzGw.jpg)
+Something Otherworldly:
+![Logo](https://imgur.com/sV7A6YF.jpg)
 
+As you can see here, images will persist on the screen until the page is reloaded, or until the user mentions Mars/Venus/something otherworldly.
 
-## Client/Server Interaction via Node
-In the previous iteration of this project, we hosted the program as a github.io site, which was perfectly fine for our previous application. In the current iteration, since we needed to integrate certain toolkits and Node modules, we decided to host the program via Node. This enabled us to freely use Node modules, and let us split input/output on the client side, and processing on the server side. 
+## GitHub Link
 
+[Click Here](https://github.com/ZuShi0/A4COSC310-Solo.github.io) to go to the Project GitHub Page 
 
-Example of improvement
-
-Before we hosted the website on a Node server, all of our logic was on the client. This is extremely limiting for multiple reasons. For example, it would be very difficult to use complex NLP frameworks and libraries that were necessary for the project. We would need CDNs (content distribution networks) to send the entire libraries to the browser every time someone would connect to the website, causing network stress on both the CDN and client. Using CDNs is beyond the scope of the project anyways. Another blockade would be that since an API wouldn’t exist, we wouldn’t be able to fulfill the specification of 5 API features. Since we decided to use Node, we were able to easily overcome all these major issues with minimal effort and time.
-
-
-
+(https://github.com/ZuShi0/A4COSC310-Solo.github.io)
 
 ## License
 
@@ -91,7 +68,7 @@ You must have `npm` and `nodejs` installed on your system. https://nodejs.org/en
 
 clone the project
 ```
-git clone https://github.com/COSC-310-team-11/A3COSC310-Team11.github.io
+git clone https://github.com/ZuShi0/A4COSC310-Solo.github.io
 ````
 
 install all the npm dependencies

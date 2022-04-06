@@ -118,9 +118,9 @@ var vocabulary = [
 
 // for maps api location selection
 const maps_vocabulary = [
-	'what does Mars look like',
-	'what does Venus look like',
-	'what does something otherworldly look like'
+	'Mars',
+	'Venus',
+	'something otherworldly'
 ];
 
 const maps_locations = [
@@ -429,16 +429,6 @@ function getResponse(input) {
 
 	//  var userInput = input.replace(punctRE, '').toLowerCase();
 
-	//calculate the sentiment
-	let sentiment = analyzeSentiment(input);
-	//if sentiment is overwhelmingly positive or negative, return a different response
-	if (sentiment > 0.4) {
-		return positive_vocabulary[Math.floor(Math.random() * positive_vocabulary.length)];
-	}
-	if (sentiment < -0.4) {
-		return negative_vocabulary[Math.floor(Math.random() * negative_vocabulary.length)];
-	}
-
 	// determine if maps api is needed
 	var reqLoc = false;
 	var locIdx = null;
@@ -453,6 +443,17 @@ function getResponse(input) {
 	if (reqLoc == true){
 		return "Look to your top right and I can show you:LatLong"+maps_locations[locIdx];
 	}
+
+	//calculate the sentiment
+	let sentiment = analyzeSentiment(input);
+	//if sentiment is overwhelmingly positive or negative, return a different response
+	if (sentiment > 0.4) {
+		return positive_vocabulary[Math.floor(Math.random() * positive_vocabulary.length)];
+	}
+	if (sentiment < -0.4) {
+		return negative_vocabulary[Math.floor(Math.random() * negative_vocabulary.length)];
+	}
+
 	// get stemmed version of user input without spaces
 	// userInput = stemInput(input);
 
