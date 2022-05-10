@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 const chatLog = [];
 
 // holds street view api key
-const streetKey = 'AIzaSyBkn2CnQi4FHdHAY9IZ9hNVmz4wFgS0Jok';
+const streetKey = 'key';
 
 // language picker button functions
 function toggleDrop() {
